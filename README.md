@@ -12,7 +12,7 @@ sumo-sovd (campaign orchestrator)
      ↓ per-ECU via SOVD REST API
      ↓
 ┌─────────────┐  ┌─────────────┐  ┌─────────────┐
-│   vm-mgr    │  │   SOVDd     │  │   other     │
+│   sumo-mm   │  │   SOVDd     │  │   other     │
 │  (SUIT+SOVD)│  │ (UDS+SOVD)  │  │   SOVD      │
 │  sumo-onboard  │  │             │  │   server    │
 └─────────────┘  └─────────────┘  └─────────────┘
@@ -26,7 +26,7 @@ sumo-sovd (campaign orchestrator)
 | **sumo-rs** | Rust | [tr-sdv-sandbox/sumo-rs](https://github.com/tr-sdv-sandbox/sumo-rs) | SUIT library: codec, crypto, onboard, offboard, processor, CLI |
 | **libsumo** | C99/C++17 | [tr-sdv-sandbox/libsumo](https://github.com/tr-sdv-sandbox/libsumo) | C/C++ implementation: C99 onboard, C++17 offboard |
 | **sumo-sovd** | Rust | [sdv-playground/sumo-sovd](https://github.com/sdv-playground/sumo-sovd) | Campaign orchestrator over SOVD (multi-ECU updates) |
-| **vm-mgr** | Rust | [sdv-playground/vm-mgr](https://github.com/sdv-playground/vm-mgr) | VM lifecycle manager with SUIT manifest integration |
+| **sumo-machine-manager** | Rust | [sdv-playground/sumo-machine-manager](https://github.com/sdv-playground/sumo-machine-manager) | Onboard machine manager: A/B-banked OTA, boot, HSM, VM lifecycle (SUIT) |
 
 ## Architecture
 
