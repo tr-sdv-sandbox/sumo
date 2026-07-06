@@ -83,6 +83,14 @@ SUIT_Authentication = [
   bstr .cbor SUIT_Digest,               ; manifest digest
   * bstr .cbor COSE_Sign1               ; one or more signatures
 ]
+
+; Each COSE_Sign1's PROTECTED header carries the manifest signing time —
+; REQUIRED in sumo. Label 15 (RFC 9597 "CWT Claims") holds a CWT Claims Set
+; with the registered iat claim (6, RFC 8392 NumericDate = Unix seconds):
+;   protected: { 1: alg, 15: { 6: <signing-time-unix-secs> } }
+; In the protected header, so the signature covers it: a signed lower bound
+; on real time. A clockless device ratchets its safe-time floor from it
+; (floor = max(floor, iat)). See safe-time-floor.md.
 ```
 
 ### Campaign Manifest (L1)

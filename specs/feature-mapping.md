@@ -23,8 +23,24 @@ RFC 9052 COSE, RFC 9019 architecture, RFC 9124 information model).
 | `signing_cert` (DER cert embedded in manifest) | COSE header `x5chain` or `kid` | DIRECT | Key identification via COSE headers rather than embedding raw certs |
 | X.509 3-tier PKI (Root → Intermediate → Update) | COSE_Sign1 + trust anchors + delegation chains | PARTIAL | SUIT defines trust anchors and authorization policies but does NOT mandate X.509. Can use raw COSE keys, C509, or X.509. More flexible but less opinionated. See trust-domains draft for delegation. |
 | Certificate chain validation | Trust anchor verification of COSE_Sign1 | PARTIAL | SUIT verifies signatures against provisioned trust anchors. Chain walking is implementation-defined, not standardized in the manifest format itself. |
+| **Manifest signing time** (sumo addition) | `iat` in a CWT Claims Set in the COSE_Sign1 **protected** header — `{15: {6: iat}}` | ADDITION | Base SUIT has no signed issuance time. sumo REQUIRES every manifest to carry one: COSE header label **15** (RFC 9597 "CWT Claims in COSE Headers") holding the registered `iat` claim (**6**, RFC 8392 — NumericDate, seconds since the Unix epoch). In the *protected* header, so the signature covers it. No invented label: both code points are IANA-registered. |
 
 **Assessment**: Signing is a clean mapping. The big win is dropping X.509 as the manifest container — SUIT_Envelope with COSE_Sign1 is purpose-built and much simpler. PKI is more flexible but less prescribed.
+
+**Signing time (`iat`) — sumo requirement.** Every sumo manifest MUST carry a signed
+issuance time in the COSE_Sign1 protected header (`{15: {6: <unix secs>}}`). Because
+it rides in the *protected* header it is covered by the manifest signature, so it is an
+unforgeable **lower bound on real time** attested by the signer — "real time was ≥ `iat`
+when this was signed." A clockless device (no RTC; boots at the Unix epoch) harvests it
+after verifying the manifest and ratchets a persistent, monotonic *safe-time floor*
+(`floor = max(floor, iat)`), which then serves as the trusted "current time" for
+otherwise-unenforceable offline checks such as `suit-condition-use-before` and
+certificate/token expiry. A monotone `max` can only *tighten* expiry, never loosen it,
+so harvesting is safe even from the manifest currently being judged. The self-asserted
+`iat` can later be upgraded to a TSA-backed timestamp (RFC 3161 / COSE countersignature)
+in the same header layer without changing the field's meaning. See
+`sumo-workspace/docs/design/safe-time-floor.md`. Encoded/consumed by sumo-rs
+(`sumo-offboard` writes it; `sumo-onboard` `Manifest::signing_time()` reads it).
 
 ---
 
