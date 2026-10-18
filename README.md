@@ -100,3 +100,7 @@ IETF RFCs and drafts used by SUMO are in [`refs/`](refs/):
 - draft-ietf-suit-firmware-encryption — Firmware Encryption
 - draft-ietf-suit-update-management — Version Matching Extensions
 - draft-ietf-suit-trust-domains — Trust Domains and Delegation
+
+## License
+
+Apache-2.0. See [LICENSE](LICENSE).
